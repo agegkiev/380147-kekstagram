@@ -35,7 +35,7 @@ function shuffle(arr) {
 
 arrShuffle = shuffle(arrShuffle);
 
-function createUserPhotosArray(total) {
+function createUserPhotosArray() {
   for (var i = 1; i <= total; i++) {
     UserPhotosArray[i] = {
       url: 'photos/' + arrShuffle[i] + '.jpg',
@@ -46,7 +46,7 @@ function createUserPhotosArray(total) {
   return UserPhotosArray;
 }
 
-UserPhotosArray = createUserPhotosArray(total);
+UserPhotosArray = createUserPhotosArray();
 
 function createDomElement(numb) {
   img.setAttribute('src', UserPhotosArray[numb].url);
