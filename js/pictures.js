@@ -5,7 +5,7 @@ var arrShuffle = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
 var COMMENTS = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
 var container = document.querySelector('.pictures');
 var template = document.querySelector('#picture-template').content;
-var total = 26;
+var total = 24;
 var img = template.querySelector('img');
 var comments = template.querySelector('.picture-comments');
 var likes = template.querySelector('.picture-likes');
@@ -62,7 +62,7 @@ for (var i = 1; i <= total; i++) {
 
 container.appendChild(fragment);
 
-gallery.classList.remove('hidden');
+// gallery.classList.remove('hidden');
 
 function createGalleryOverlay(numb) {
   galleryImage.setAttribute('src', UserPhotosArray[numb].url);
@@ -73,3 +73,17 @@ function createGalleryOverlay(numb) {
 }
 
 createGalleryOverlay(1);
+
+var picture = document.querySelectorAll('.picture');
+for (var j = 0; j < picture.length; j++) {
+  picture[j].addEventListener('click', function () {
+    gallery.classList.remove('hidden');
+    event.preventDefault();
+  });
+}
+
+var galleryOverlayClose = document.querySelector('.gallery-overlay-close');
+
+galleryOverlayClose.addEventListener('click', function () {
+  gallery.classList.add('hidden');
+});
