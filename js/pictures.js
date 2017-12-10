@@ -14,6 +14,7 @@ var gallery = document.querySelector('.gallery-overlay');
 var galleryImage = gallery.querySelector('.gallery-overlay-image');
 var galleryLikes = gallery.querySelector('.likes-count');
 var galleryComments = gallery.querySelector('.comments-count');
+var picture = template.querySelector('.picture');
 
 function getRandomInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -36,7 +37,7 @@ function shuffle(arr) {
 arrShuffle = shuffle(arrShuffle);
 
 function createUserPhotosArray() {
-  for (var i = 1; i <= total; i++) {
+  for (var i = 0; i <= total; i++) {
     UserPhotosArray[i] = {
       url: 'photos/' + arrShuffle[i] + '.jpg',
       likes: getRandomInRange(25, 200),
@@ -52,17 +53,16 @@ function createDomElement(numb) {
   img.setAttribute('src', UserPhotosArray[numb].url);
   comments.textContent = UserPhotosArray[numb].length;
   likes.textContent = UserPhotosArray[numb].likes;
+  picture.dataset.index = arrShuffle[numb];
   var element = template.cloneNode(true);
   return element;
 }
 
-for (var i = 1; i <= total; i++) {
+for (var i = 0; i <= total; i++) {
   fragment.appendChild(createDomElement(i));
 }
 
 container.appendChild(fragment);
-
-// gallery.classList.remove('hidden');
 
 function createGalleryOverlay(numb) {
   galleryImage.setAttribute('src', UserPhotosArray[numb].url);
@@ -72,15 +72,27 @@ function createGalleryOverlay(numb) {
   return element;
 }
 
-createGalleryOverlay(1);
+picture = document.querySelectorAll('.picture');
 
-var picture = document.querySelectorAll('.picture');
 for (var j = 0; j < picture.length; j++) {
   picture[j].addEventListener('click', function () {
     gallery.classList.remove('hidden');
     event.preventDefault();
+    createGalleryOverlay(1);
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === 27) {
+        gallery.classList.add('hidden');
+      }
+    });
+  });
+
+  picture[j].addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 13) {
+      gallery.classList.remove('hidden');
+    }
   });
 }
+
 
 var galleryOverlayClose = document.querySelector('.gallery-overlay-close');
 
