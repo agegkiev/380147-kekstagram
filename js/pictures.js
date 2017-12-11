@@ -38,10 +38,12 @@ arrShuffle = shuffle(arrShuffle);
 
 function createUserPhotosArray() {
   for (var i = 0; i <= total; i++) {
+    var index = arrShuffle[i];
     UserPhotosArray[i] = {
-      url: 'photos/' + arrShuffle[i] + '.jpg',
+      url: 'photos/' + index + '.jpg',
       likes: getRandomInRange(25, 200),
-      comments: getRandomElement(COMMENTS)
+      comments: getRandomElement(COMMENTS),
+      index: index
     };
   }
   return UserPhotosArray;
@@ -49,53 +51,62 @@ function createUserPhotosArray() {
 
 UserPhotosArray = createUserPhotosArray();
 
-function createDomElement(numb) {
-  img.setAttribute('src', UserPhotosArray[numb].url);
-  comments.textContent = UserPhotosArray[numb].length;
-  likes.textContent = UserPhotosArray[numb].likes;
-  picture.dataset.index = arrShuffle[numb];
+function createDomElement(obj) {
+  img.setAttribute('src', obj.url);
+  comments.textContent = obj.length;
+  likes.textContent = obj.likes;
+  picture.dataset.index = obj.index;
   var element = template.cloneNode(true);
   return element;
 }
 
 for (var i = 0; i <= total; i++) {
-  fragment.appendChild(createDomElement(i));
+  fragment.appendChild(createDomElement(UserPhotosArray[i]));
 }
 
 container.appendChild(fragment);
 
-function createGalleryOverlay(numb) {
-  galleryImage.setAttribute('src', UserPhotosArray[numb].url);
+function createGalleryOverlay(obj) {
+  galleryImage.setAttribute('src', obj.url);
   galleryComments.textContent = getRandomInRange(1, 2);
-  galleryLikes.textContent = UserPhotosArray[numb].likes;
-  var element = template.cloneNode(true);
-  return element;
+  galleryLikes.textContent = obj.likes;
+  gallery.classList.remove('hidden');
 }
 
-picture = document.querySelectorAll('.picture');
-
-for (var j = 0; j < picture.length; j++) {
-  picture[j].addEventListener('click', function () {
-    gallery.classList.remove('hidden');
-    event.preventDefault();
-    createGalleryOverlay(1);
-    document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === 27) {
-        gallery.classList.add('hidden');
-      }
-    });
-  });
-
-  picture[j].addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 13) {
-      gallery.classList.remove('hidden');
+function showPopupImage(e) {
+  e.preventDefault();
+  var target = e.target.tagName === 'IMG' ? e.target.parentElement : e.target;
+  var targetIndex = target.dataset.index;
+  var currentObject = UserPhotosArray.find(function (elem) {
+    if (elem.index === +targetIndex) {
+      return elem;
     }
   });
+  createGalleryOverlay(currentObject);
 }
 
+container.addEventListener('click', showPopupImage);
+
+container.addEventListener('keydown', function (e) {
+  if (e.keyCode === 13) {
+    showPopupImage(e);
+  }
+});
+
+container.addEventListener('keydown', function (e) {
+  if (e.keyCode === 27) {
+    gallery.classList.add('hidden');
+  }
+});
 
 var galleryOverlayClose = document.querySelector('.gallery-overlay-close');
 
 galleryOverlayClose.addEventListener('click', function () {
   gallery.classList.add('hidden');
+});
+
+galleryOverlayClose.addEventListener('keydown', function (e) {
+  if (e.keyCode === 13) {
+    gallery.classList.add('hidden');
+  }
 });
