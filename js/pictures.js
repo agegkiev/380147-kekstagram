@@ -15,6 +15,8 @@ var galleryImage = gallery.querySelector('.gallery-overlay-image');
 var galleryLikes = gallery.querySelector('.likes-count');
 var galleryComments = gallery.querySelector('.comments-count');
 var picture = template.querySelector('.picture');
+var KEY_ESC = 27;
+var KEY_ENTER = 13;
 
 function getRandomInRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -88,13 +90,13 @@ function showPopupImage(e) {
 container.addEventListener('click', showPopupImage);
 
 container.addEventListener('keydown', function (e) {
-  if (e.keyCode === 13) {
+  if (e.keyCode === KEY_ENTER) {
     showPopupImage(e);
   }
 });
 
 container.addEventListener('keydown', function (e) {
-  if (e.keyCode === 27) {
+  if (e.keyCode === KEY_ESC) {
     gallery.classList.add('hidden');
   }
 });
@@ -106,7 +108,97 @@ galleryOverlayClose.addEventListener('click', function () {
 });
 
 galleryOverlayClose.addEventListener('keydown', function (e) {
-  if (e.keyCode === 13) {
+  if (e.keyCode === KEY_ENTER) {
     gallery.classList.add('hidden');
+  }
+});
+
+// задание четвертое
+var uploadOverlay = document.querySelector('.upload-overlay');
+
+function pushEsc(e) {
+  if (e.keyCode === KEY_ESC) {
+    uploadOverlay.classList.add('hidden');
+  }
+}
+
+function pushEnter(e) {
+  if (e.keyCode === KEY_ENTER) {
+    uploadOverlay.classList.add('hidden');
+  }
+}
+
+document.querySelector('#upload-select-image').addEventListener('change', function () {
+  if (document.activeElement.className !== 'upload-form-description') {
+    uploadOverlay.classList.remove('hidden');
+  }
+});
+
+document.querySelector('.upload-form-cancel').addEventListener('click', function () {
+  uploadOverlay.classList.add('hidden');
+});
+
+document.addEventListener('keydown', function (e) {
+  pushEsc(e);
+});
+
+document.querySelector('.upload-form-cancel').addEventListener('keydown', function (e) {
+  event.preventDefault();
+  pushEnter(e);
+});
+
+var resizeValue = document.querySelector('.upload-resize-controls-value');
+var resizeControls = uploadOverlay.querySelector('.upload-resize-controls');
+var imagePreview = uploadOverlay.querySelector('.effect-image-preview');
+var step = 25;
+document.querySelector('.upload-resize-controls-value').setAttribute('value', 100 + '%');
+
+function resizeImage(e) {
+  var uploadButtonInc = document.querySelector('.upload-resize-controls-button-inc');
+  if (e.target === uploadButtonInc) {
+    if (resizeValue.value !== '100%') {
+      resizeValue.value = parseInt(resizeValue.value, 10) + step + '%';
+    }
+  } else {
+    if (resizeValue.value !== '25%') {
+      resizeValue.value = parseInt(resizeValue.value, 10) - step + '%';
+    }
+  }
+  imagePreview.style.transform = 'scale(' + parseInt(resizeValue.value, 10) / 100 + ')';
+}
+
+resizeControls.addEventListener('click', function (e) {
+  if (e.target.nodeName.toLowerCase() === 'button') {
+    resizeImage(e);
+  }
+});
+
+document.querySelector('.upload-effect-controls').addEventListener('click', function (event) {
+  var value = event.target.value;
+  switch (value) {
+    case 'none':
+      document.querySelector('.effect-image-preview').classList.remove('effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat');
+      document.querySelector('.effect-image-preview').classList.add('effect-none');
+      break;
+    case 'chrome':
+      document.querySelector('.effect-image-preview').classList.remove('effect-none', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat');
+      document.querySelector('.effect-image-preview').classList.add('effect-chrome');
+      break;
+    case 'sepia':
+      document.querySelector('.effect-image-preview').classList.remove('effect-none', 'effect-chrome', 'effect-marvin', 'effect-phobos', 'effect-heat');
+      document.querySelector('.effect-image-preview').classList.add('effect-sepia');
+      break;
+    case 'marvin':
+      document.querySelector('.effect-image-preview').classList.remove('effect-none', 'effect-chrome', 'effect-sepia', 'effect-phobos', 'effect-heat');
+      document.querySelector('.effect-image-preview').classList.add('effect-marvin');
+      break;
+    case 'phobos':
+      document.querySelector('.effect-image-preview').classList.remove('effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-heat');
+      document.querySelector('.effect-image-preview').classList.add('effect-phobos');
+      break;
+    case 'heat':
+      document.querySelector('.effect-image-preview').classList.remove('effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos');
+      document.querySelector('.effect-image-preview').classList.add('effect-heat');
+      break;
   }
 });
