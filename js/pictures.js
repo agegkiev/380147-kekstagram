@@ -202,3 +202,41 @@ document.querySelector('.upload-effect-controls').addEventListener('click', func
       break;
   }
 });
+
+function setError(evt, value) {
+  uploadFormHashtags.setCustomValidity(value);
+  uploadFormHashtags.setAttribute('style', 'box-shadow: 0 0 0 3px rgb(255, 0, 0)');
+  evt.preventDefault();
+}
+
+var uploadForm = document.querySelector('.upload-form');
+var uploadFormHashtags = document.querySelector('.upload-form-hashtags');
+
+uploadForm.addEventListener('submit', function (e) {
+  var space = true;
+  var hashtag = uploadFormHashtags.value;
+  var hashtagArr = [];
+  hashtagArr = hashtag.split(' ');
+
+  for (i = 0; i < hashtagArr.length; i++) {
+    var bag = hashtagArr[i].split('');
+    var number = 0;
+    for (var j = 0; j < bag.length; j++) {
+      if (bag[j] === '#') {
+        number = number + 1;
+        if (number > 1) {
+          space = false;
+        }
+      }
+    }
+  }
+  if (space) {
+    window.backend.save(new FormData(uploadForm), function () {
+      uploadOverlay.classList.add('hidden');
+      uploadForm.reset();
+    });
+    e.preventDefault();
+  } else if (!space) {
+    setError(e, 'хэш-теги разделяются пробелами');
+  }
+});
